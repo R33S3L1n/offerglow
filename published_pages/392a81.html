@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>张雅琪 - OfferGlow 网页分身</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #fafafa; color: #111111; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        [contenteditable="true"] { outline: 2px solid transparent; outline-offset: 3px; transition: outline-color .16s ease, background-color .16s ease; }
+        [contenteditable="true"]:focus { outline-color: rgba(59,130,246,.24); background: rgba(59,130,246,.05); }
+        li::marker { color: #9ca3af; }
+        
+        .image-upload-container { cursor: pointer; position: relative; transition: opacity 0.2s; }
+        .image-upload-container:hover { opacity: 0.9; }
+        .image-upload-container::after { content: '📸 点击更换图片'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.6); color: white; padding: 10px 16px; border-radius: 20px; font-size: 13px; pointer-events: none; opacity: 0; transition: opacity 0.2s; white-space: nowrap; font-weight: 500; }
+        .image-upload-container:hover::after { opacity: 1; }
+        
+        .rich-toolbar { position: absolute; z-index: 100; background: #fff; border: 1px solid #e5e7eb; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 8px; padding: 4px; display: none; gap: 4px; align-items: center; }
+        .rich-toolbar button { background: none; border: none; cursor: pointer; padding: 6px; border-radius: 4px; color: #374151; font-weight: 600; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; font-family: serif; font-size: 16px; }
+        .rich-toolbar button:hover { background: #f3f4f6; }
+        .color-palette { display: flex; gap: 4px; border-left: 1px solid #e5e7eb; padding-left: 6px; margin-left: 2px; }
+        .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.1s; }
+        .color-dot:hover { transform: scale(1.15); }
+        #publish-btn { position: fixed; bottom: 24px; right: 24px; z-index: 50; background: #111; color: white; border: none; padding: 12px 24px; border-radius: 99px; font-size: 14px; font-weight: 500; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.2s, background 0.2s; display: flex; align-items: center; gap: 8px; }
+        #publish-btn:hover { transform: translateY(-2px); background: #000; }
+        #publish-btn:active { transform: translateY(0); }
+        #publish-btn.loading { opacity: 0.7; pointer-events: none; }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.sticky{position:sticky}.top-0{top:0px}.z-40{z-index:40}.mx-auto{margin-left:auto;margin-right:auto}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-4{margin-top:1rem}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.aspect-\[16\/10\]{aspect-ratio:16/10}.aspect-\[4\/5\]{aspect-ratio:4/5}.h-full{height:100%}.min-h-\[120px\]{min-height:120px}.min-h-\[320px\]{min-height:320px}.w-full{width:100%}.max-w-6xl{max-width:72rem}.max-w-md{max-width:28rem}.max-w-xl{max-width:36rem}.resize-none{resize:none}.list-disc{list-style-type:disc}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-12{gap:3rem}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-8{gap:2rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.whitespace-nowrap{white-space:nowrap}.rounded-2xl{border-radius:1rem}.rounded-\[1\.25rem\]{border-radius:1.25rem}.rounded-\[1\.5rem\]{border-radius:1.5rem}.rounded-\[1\.75rem\]{border-radius:1.75rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-gray-100{--tw-border-opacity:1;border-color:rgb(243 244 246 / var(--tw-border-opacity, 1))}.border-gray-200{--tw-border-opacity:1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.bg-black{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-blue-500{--tw-bg-opacity:1;background-color:rgb(59 130 246 / var(--tw-bg-opacity, 1))}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.object-cover{object-fit:cover}.p-6{padding:1.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.pb-20{padding-bottom:5rem}.pl-5{padding-left:1.25rem}.pt-16{padding-top:4rem}.font-sans{font-family:Inter, sans-serif}.font-serif{font-family:Playfair Display, serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-5xl{font-size:3rem;line-height:1}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-\[1\.02\]{line-height:1.02}.leading-snug{line-height:1.375}.tracking-\[0\.18em\]{letter-spacing:0.18em}.tracking-wide{letter-spacing:0.025em}.text-blue-500{--tw-text-opacity:1;color:rgb(59 130 246 / var(--tw-text-opacity, 1))}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-gray-700{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity, 1))}.text-gray-800{--tw-text-opacity:1;color:rgb(31 41 55 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:border-gray-400:hover{--tw-border-opacity:1;border-color:rgb(156 163 175 / var(--tw-border-opacity, 1))}.hover\:bg-gray-800:hover{--tw-bg-opacity:1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.focus\:border-gray-400:focus{--tw-border-opacity:1;border-color:rgb(156 163 175 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 768px){.md\:flex{display:flex}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-\[0\.82fr_1\.18fr\]{grid-template-columns:0.82fr 1.18fr}.md\:grid-cols-\[0\.9fr_1\.1fr\]{grid-template-columns:0.9fr 1.1fr}.md\:grid-cols-\[1\.05fr_0\.95fr\]{grid-template-columns:1.05fr 0.95fr}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-7xl{font-size:4.5rem;line-height:1}}</style></head>
+<body class="antialiased">
+    <nav class="w-full border-b border-gray-100 bg-white/90 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="font-serif text-xl font-semibold">张雅琪</div>
+            <div class="hidden md:flex items-center gap-8 text-sm text-gray-500">
+                <a href="#hero">首页</a>
+                <a href="#education">教育</a>
+                <a href="#experience">经历</a>
+                <a href="#generatedPortfolio">项目</a>
+                <a href="#contact">联系</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="hero" class="max-w-6xl mx-auto px-6 pt-16 pb-20 grid grid-cols-1 md:grid-cols-[1.05fr_0.95fr] gap-12 items-center">
+            <div>
+                <div class="text-sm text-gray-400 tracking-[0.18em] uppercase mb-4">Personal Page</div>
+                <h1 class="text-5xl md:text-7xl font-serif font-bold leading-[1.02] mb-4">
+                    <span class="block text-xl font-sans font-normal text-gray-500 mb-2">你好，我是</span>
+                    <span>张雅琪。</span>
+                </h1>
+                <p class="text-xl font-medium mb-3 text-gray-800 leading-snug">本人性格温和细致、积极主动，热爱文字创作与新媒体运营，具备较…</p>
+                <p class="text-sm text-gray-400 mb-6 tracking-wide">新媒体运营/文案编辑（可适配内容创作类基础岗位）</p>
+                <p class="text-gray-500 leading-8 max-w-xl">本人性格温和细致、积极主动，热爱文字创作与新媒体运营，具备较强的责任心、执行力与创新意识，做事认真负责、注重细节，能快速适应新媒体行业的节奏与需求。在校期间担任校报编辑、学生会干事，积累了丰富的文案撰写、活动策划与宣传经验，熟练掌握新媒体运营相关技能；实习期间认真钻研岗位知识，独立完成账号运营、文案创作等工作，提升了自身的业务能力与抗压能力，得到领导与同事的肯定。 具备良好的团队协作精神，善于倾听他人建议，主动配合团队完成工作任务；对待工作充满热情，愿意不断学习新媒体领域的新知识、新技能，提升自身竞争力，努力为公司创造价值。 备注 可立即到岗，能接受阶段性加班，服从公司岗位安排与工作调配； 具备一定的文案创新能力，愿意结合行业热点优化内容，提升传播效果； 个人简历所有内容均真实有效，可提供相关证书、作品及实习证明。</p>
+            </div>
+            <div>
+                <div class="aspect-[4/5] rounded-[2rem] overflow-hidden bg-gray-100 shadow-2xl image-upload-container">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&amp;fit=crop&amp;q=80&amp;w=1000" alt="Profile" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </section>
+
+        
+                <section id="education" class="max-w-6xl mx-auto px-6 py-12 border-t border-gray-100">
+                    <p class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-4">教育背景</p>
+                    <div class="grid gap-4">
+                        
+                            <article class="rounded-[1.5rem] border border-gray-100 bg-white px-5 py-5 shadow-sm">
+                                <div class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-2" style="outline:none">2022年9月-2026年6月</div>
+                                <h3 class="font-semibold text-gray-900 mb-3" style="outline:none">齐鲁师范学院 - 汉语言文学专业</h3>
+                                <ul class="space-y-2 text-sm text-gray-600 leading-7 list-disc pl-5"><li style="outline:none">核心课程：现代汉语、古代汉语、文学概论、写作学、传播学、新媒体文案创作、广告策划、编辑出版实务、现代汉语语法研究（成绩均在80分以上，专业排名前25%）</li><li style="outline:none">荣誉奖项：2023</li><li style="outline:none">2024学年 校级二等奖学金</li><li style="outline:none">2024年 校级“优秀学生记者”</li><li style="outline:none">2023年 省级大学生文学创作大赛三等奖</li><li style="outline:none">2022</li></ul>
+                            </article>
+                        
+                    </div>
+                </section>
+            
+
+        <section id="experience" class="border-t border-gray-100 bg-white py-16">
+            <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[0.82fr_1.18fr] gap-10 items-start">
+                <aside class="space-y-6">
+                    <div>
+                        <p class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-4" style="outline:none">核心信息</p>
+                        <h2 class="text-4xl font-serif font-bold mb-4" style="outline:none">经历与能力</h2>
+                    </div>
+                    <div class="flex flex-wrap gap-2"><span class="bg-blue-500 text-white px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">数据统计</span><span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">英语读写</span><span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">普通话</span><span class="bg-blue-500 text-white px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">新闻稿件</span><span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">散文随笔等</span><span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">提升传播效果</span><span class="bg-blue-500 text-white px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">小红书</span><span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">简单海报设计</span><span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">资料整理工作</span><span class="bg-blue-500 text-white px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap" style="outline:none;cursor:text">普通话标准</span></div>
+                </aside>
+                <div class="space-y-6">
+                    
+                <article class="relative rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-sm">
+                    <div class="text-xs text-blue-500 font-semibold tracking-[0.18em] uppercase mb-3" style="outline:none">2024年7月-2024年10月</div>
+                    <h3 class="text-xl font-bold mb-4" style="outline:none">济南市XX文化传播有限公司 - 新媒体运营实习生</h3>
+                    <ul class="space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5"><li style="outline:none">负责公司官方微信公众号、小红书账号的日常运营，撰写推文、笔记文案，优化标题与封面，累计发布内容48篇，平均阅读量1200+，小红书笔记最高点赞量500+</li><li style="outline:none">协助运营团队策划节日营销、话题挑战等活动，参与撰写活动方案，统计活动数据，分析用户反馈，优化活动流程，带动账号粉丝增长3000+</li><li style="outline:none">整理账号运营数据，每周撰写运营周报，分析内容传播效果，提出优化建议8条，被采纳5条，有效提升账号互动率15%</li><li style="outline:none">协助编辑团队完成文案校对、排版，对接设计部门优化图文搭配，确保内容发布准确、美观，无错别字及格式错误</li></ul>
+                </article>
+            
+                <article class="relative rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-sm">
+                    <div class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-3" style="outline:none">2023年9月-2024年6月</div>
+                    <h3 class="text-xl font-bold mb-4" style="outline:none">齐鲁师范学院 - 校报编辑部编辑</h3>
+                    <ul class="space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5"><li style="outline:none">负责校报校园新闻、人物专访、文学副刊的稿件征集、筛选与编辑，累计编辑稿件60余篇，校对报纸8期，确保稿件内容真实、文字流畅、格式规范</li><li style="outline:none">主动采访校园优秀师生、校园活动，撰写专访稿件12篇，其中3篇被校级新媒体平台转载，获得师生广泛关注</li><li style="outline:none">协助组织校园征文活动2场，负责活动宣传、稿件收集与评审，累计收集稿件200余份，评选优秀稿件30篇，推动校园文化建设</li><li style="outline:none">负责校报电子版的排版、上传，对接校园官网更新校报内容，确保电子版与纸质版同步发布，方便师生查阅</li></ul>
+                </article>
+            
+                <article class="relative rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-sm">
+                    <div class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-3" style="outline:none">2022年11月-2023年6月</div>
+                    <h3 class="text-xl font-bold mb-4" style="outline:none">齐鲁师范学院 - 中文系学生会文艺部干事</h3>
+                    <ul class="space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5"><li style="outline:none">负责学生会文艺活动的文案撰写，包括活动通知、宣传海报文案、节目串词等，累计撰写文案30余份，贴合活动主题，提升活动宣传效果</li><li style="outline:none">协助策划校园文化艺术节、迎新晚会等活动，参与节目筛选、流程对接，负责活动现场的文案支持与宣传配合，保障活动顺利举办</li><li style="outline:none">整理文艺活动相关资料，撰写活动总结，归档活动照片、文案等素材，为后续活动开展提供参考</li></ul>
+                </article>
+            
+                </div>
+            </div>
+        </section>
+
+        
+                <section class="max-w-6xl mx-auto px-6 py-16 border-t border-gray-100" id="generatedPortfolio">
+                    <p class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-4" style="outline:none">精选项目</p>
+                    <h2 class="text-4xl md:text-5xl font-serif font-bold mb-12" style="outline:none">我做过的事。</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        
+                <article class="rounded-[1.75rem] border border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between min-h-[320px]">
+                    <div>
+                        <div class="aspect-[16/10] rounded-[1.25rem] overflow-hidden bg-gray-100 mb-5 image-upload-container">
+                            <img src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?auto=format&amp;fit=crop&amp;q=80&amp;w=800" class="w-full h-full object-cover" alt="项目配图">
+                        </div>
+                        <div class="text-xs text-blue-500 font-semibold tracking-[0.18em] uppercase mb-3" style="outline:none">2023年4月</div>
+                        <h3 class="text-2xl font-serif font-bold mb-4" style="outline:none">参与济南市“世界读书日”志愿服务活动，</h3>
+                        <ul class="space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5"><li style="outline:none">负责图书整理、读书分享会组织，累计志愿服务时长20小时，获评“优秀志愿组织者”</li></ul>
+                    </div>
+                </article>
+            
+                <article class="rounded-[1.75rem] border border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between min-h-[320px]">
+                    <div>
+                        <div class="aspect-[16/10] rounded-[1.25rem] overflow-hidden bg-gray-100 mb-5 image-upload-container">
+                            <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&amp;fit=crop&amp;q=80&amp;w=800" class="w-full h-full object-cover" alt="项目配图">
+                        </div>
+                        <div class="text-xs text-blue-500 font-semibold tracking-[0.18em] uppercase mb-3" style="outline:none">2022年12月</div>
+                        <h3 class="text-2xl font-serif font-bold mb-4" style="outline:none">参与学校“书香校园”公益活动，</h3>
+                        <ul class="space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5"><li style="outline:none">负责书籍捐赠、图书角布置，协助开展读书宣讲活动，累计整理书籍300余册</li></ul>
+                    </div>
+                </article>
+            
+                <article class="rounded-[1.75rem] border border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between min-h-[320px]">
+                    <div>
+                        <div class="aspect-[16/10] rounded-[1.25rem] overflow-hidden bg-gray-100 mb-5 image-upload-container">
+                            <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&amp;fit=crop&amp;q=80&amp;w=800" class="w-full h-full object-cover" alt="项目配图">
+                        </div>
+                        <div class="text-xs text-blue-500 font-semibold tracking-[0.18em] uppercase mb-3" style="outline:none">2024年5月</div>
+                        <h3 class="text-2xl font-serif font-bold mb-4" style="outline:none">参与学校毕业季活动策划，</h3>
+                        <ul class="space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5"><li style="outline:none">负责毕业推文、纪念册文案撰写，完成毕业纪念推文6篇，获得毕业生广泛转发与好评</li></ul>
+                    </div>
+                </article>
+            
+                    </div>
+                </section>
+            
+
+        <section id="custom-module" class="max-w-6xl mx-auto px-6 py-16 border-t border-gray-100">
+            <h2 class="text-4xl font-serif font-bold mb-12" style="outline:none">此处写下标题</h2>
+            <div id="custom-blocks" class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8"></div>
+            <div class="flex flex-wrap gap-4">
+                <button onclick="addCustomProjectBlock()" class="px-6 py-3 rounded-full border border-gray-200 text-sm font-medium hover:border-gray-400 transition text-gray-600 bg-white shadow-sm">+ 添加图文卡片</button>
+                <button onclick="addCustomImageBlock()" class="px-6 py-3 rounded-full border border-gray-200 text-sm font-medium hover:border-gray-400 transition text-gray-600 bg-white shadow-sm">+ 添加大图展现</button>
+            </div>
+        </section>
+
+        <section id="contact" class="max-w-6xl mx-auto px-6 py-16 border-t border-gray-100">
+            <div class="grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
+                <div class="space-y-5">
+                    <p class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase">联系</p>
+                    <h2 class="text-4xl font-serif font-bold" style="outline:none">一起创造点什么。</h2>
+                    <p class="text-gray-500 leading-7 max-w-md">如果你对我的经历、项目或合作机会感兴趣，欢迎随时与我联系，探索更多可能。</p>
+                    <div class="space-y-2 text-sm text-gray-700">
+                        <p class="flex items-center gap-2"><span class="text-gray-400">✉</span><span>邮箱：zhangyaqi456@qq.com</span></p>
+                        <p class="flex items-center gap-2"><span class="text-gray-400">☎</span><span>电话：139XXXX9012</span></p>
+                    </div>
+                </div>
+                <div class="rounded-[1.75rem] border border-gray-100 bg-white p-6 shadow-sm">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <input class="border border-gray-200 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-gray-400" placeholder="你的名字">
+                        <input class="border border-gray-200 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-gray-400" placeholder="你的邮箱">
+                    </div>
+                    <textarea class="w-full min-h-[120px] border border-gray-200 rounded-2xl px-4 py-3.5 resize-none focus:outline-none focus:border-gray-400" placeholder="想说点什么？"></textarea>
+                    <button class="mt-4 w-full bg-black text-white px-8 py-3.5 rounded-full text-sm font-medium hover:bg-gray-800 transition">发送消息</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    
+    
+    
+    
+    
+    
+    
+
+</body></html>

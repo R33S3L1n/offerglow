@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OfferGlow - 极简个人求职网页生成器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#f5f2eb',
+                            dark: '#111111',
+                            muted: '#6b6b6b',
+                            accent: '#3b82f6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-nav { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); }
+        .input-shadow { box-shadow: 0 20px 40px -15px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02); }
+        .card-shadow { box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); }
+        .edit-toolbar-shadow { box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .page-glass { background: rgba(255,255,255,0.88); backdrop-filter: blur(8px); }
+        [contenteditable="true"] { outline: 2px solid transparent; outline-offset: 3px; transition: outline-color .16s ease, background-color .16s ease; }
+        [contenteditable="true"]:focus { outline-color: rgba(59,130,246,.28); background: rgba(59,130,246,.05); }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-dark font-sans antialiased selection:bg-blue-100">
+
+    <nav class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center sticky top-4 z-50 glass-nav rounded-full mt-4 mx-4 shadow-sm">
+        <div class="flex items-center gap-2 font-bold text-xl tracking-tight font-serif">
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-orange-500 shadow-inner"></div>
+            OfferGlow
+        </div>
+        <div class="hidden md:flex gap-8 text-sm font-medium text-brand-muted">
+            <a href="#process" class="hover:text-black transition">使用流程</a>
+            <a href="#features" class="hover:text-black transition">功能亮点</a>
+            <a href="#faq" class="hover:text-black transition">常见问题</a>
+        </div>
+        <div class="flex items-center gap-6 text-sm font-medium">
+            <div class="flex items-center gap-1.5 text-brand-muted cursor-pointer hover:text-black transition bg-white/50 px-3 py-1.5 rounded-full border border-gray-200/50">
+                <span class="text-black font-semibold">中</span><span class="text-gray-300">/</span><span class="text-gray-400">EN</span>
+            </div>
+            <div class="cursor-pointer text-lg hover:scale-110 transition-transform">🌙</div>
+            <a href="#" class="hover:text-brand-muted transition">登录</a>
+            <a href="#" class="bg-brand-dark text-white px-5 py-2.5 rounded-full hover:bg-gray-800 transition shadow-md">免费注册</a>
+        </div>
+    </nav>
+
+    <section class="max-w-7xl mx-auto px-6 pt-20 pb-24 text-center">
+        <h1 class="text-6xl md:text-[5.5rem] font-serif font-bold leading-[1.05] tracking-tight mb-6">
+            扔掉死板的 PDF，<br>
+            <span class="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-orange-500">生成极具质感的求职主页。</span>
+        </h1>
+        <p class="text-xl text-brand-muted mb-10 leading-relaxed max-w-3xl mx-auto">
+            OfferGlow 将干瘪的简历文字，一键转化为支持图文混排、模块化编辑的专属个人网页。用一个自带高光的分身链接，代替被淹没的 A4 纸。
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4 text-sm font-semibold text-gray-500 mb-10">
+            <span class="bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 flex items-center gap-2 text-black"><span class="w-2 h-2 rounded-full bg-blue-500"></span> 粘贴文本</span>
+            <span class="text-gray-300">→</span>
+            <span class="bg-white/60 px-4 py-2 rounded-full border border-gray-100/50">一键生成网页</span>
+            <span class="text-gray-300">→</span>
+            <span class="bg-white/60 px-4 py-2 rounded-full border border-gray-100/50">自由配图排版</span>
+            <span class="text-gray-300">→</span>
+            <span class="bg-white/60 px-4 py-2 rounded-full border border-gray-100/50">发布专属链接</span>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-white rounded-[2rem] p-3 input-shadow transition-all hover:shadow-2xl hover:shadow-blue-900/5 relative group">
+            <div class="relative bg-[#faf9f6] rounded-[1.5rem] overflow-hidden border border-gray-100/50 focus-within:bg-white focus-within:border-blue-200 transition-colors duration-300">
+                <textarea
+                    id="resumeText"
+                    class="w-full h-[220px] bg-transparent p-8 text-gray-800 placeholder-gray-400 focus:outline-none resize-none text-lg leading-relaxed"
+                    placeholder="请在此粘贴你的纯文本简历内容..."
+                ></textarea>
+
+                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#faf9f6] via-[#faf9f6] to-transparent group-focus-within:from-white group-focus-within:via-white flex justify-between items-end">
+                    <div class="flex items-center gap-2 pl-4 pb-2 hidden md:flex">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-xs text-gray-400 font-medium tracking-wide" id="inputMeta">支持直接复制 PDF、Word 或招聘软件上的文字</span>
+                    </div>
+
+                    <button id="generateBtn" class="ml-auto bg-brand-dark text-white px-8 py-3.5 rounded-full font-bold hover:bg-gray-800 transition shadow-xl shadow-black/10 flex items-center gap-2 group/btn active:scale-95">
+                        <span class="text-xl">✨</span>
+                        一键生成网页分身
+                        <svg class="w-4 h-4 text-white/70 group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-brand-dark text-white py-24 rounded-t-[3rem]">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-serif font-bold mb-16 text-center">为什么传统简历正在失效？</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+                <div class="border-l border-white/10 pl-6">
+                    <h3 class="text-2xl font-serif font-bold mb-4 italic text-orange-400">PDF 承载力太弱</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">干瘪的 A4 纸放不下你的生活侧影、项目实拍图和真实特质。在这个信息爆炸的时代，纯文字很难勾起面试官的阅读欲。</p>
+                </div>
+                <div class="border-l border-white/10 pl-6">
+                    <h3 class="text-2xl font-serif font-bold mb-4 italic text-blue-400">建站工具门槛太高</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">想做一个好看的个人网站，却被 Webflow 或 WordPress 复杂的学习成本劝退。你只需要一个能快速出效果的专属主页。</p>
+                </div>
+                <div class="border-l border-white/10 pl-6">
+                    <h3 class="text-2xl font-serif font-bold mb-4 italic text-purple-400">千篇一律没记忆点</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">HR 每天看几百份黑白文档，大家长得都一样。你需要向对方展示一个立体的“人”，而不仅仅是一个打工的代码。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="max-w-7xl mx-auto px-6 py-32 border-b border-gray-200/50">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div>
+                <p class="text-xs font-semibold text-brand-muted tracking-widest uppercase mb-4">Wysiwyg Editor</p>
+                <h2 class="text-5xl font-serif font-bold mb-6">像拼乐高一样，<br>自由定制你的网页。</h2>
+                <p class="text-lg text-brand-muted mb-8 leading-relaxed">
+                    无需任何代码知识。OfferGlow 将你的经历解析为一个一个独立的模块。你只需点击、修改、上传图片，剩下的质感交给我们的设计系统。
+                </p>
+                <ul class="space-y-4">
+                    <li class="flex items-center gap-3 text-brand-dark font-medium">
+                        <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs">✓</span>
+                        上传个人头像与项目实拍图
+                    </li>
+                    <li class="flex items-center gap-3 text-brand-dark font-medium">
+                        <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs">✓</span>
+                        自由拖拽模块位置，隐藏多余内容
+                    </li>
+                    <li class="flex items-center gap-3 text-brand-dark font-medium">
+                        <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs">✓</span>
+                        点击文本即可直接修改，所见即所得
+                    </li>
+                </ul>
+            </div>
+
+            <div class="relative bg-white rounded-[2rem] shadow-2xl p-4 border border-gray-100 min-h-[500px]">
+                <div class="flex gap-2 mb-6 ml-2 mt-2">
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                </div>
+
+                <div class="px-6 relative group">
+                    <h3 class="text-3xl font-serif font-bold mb-2 outline-none border-b border-transparent hover:border-gray-200 transition cursor-text">用户增长负责人</h3>
+                    <p class="text-gray-500 mb-6 outline-none border-b border-transparent hover:border-gray-200 transition cursor-text text-sm">主导千万级产品运营，提升转化率15%</p>
+
+                    <div class="relative rounded-xl overflow-hidden bg-gray-100 h-40 mb-4 flex items-center justify-center group/img cursor-pointer">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Data" class="w-full h-full object-cover opacity-90 transition group-hover/img:scale-105">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-black px-4 py-2 rounded-full text-xs font-bold shadow-lg">更换图片</span>
+                        </div>
+                    </div>
+
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-white rounded-xl edit-toolbar-shadow p-2 flex flex-col gap-2 border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-500" title="上移">↑</button>
+                        <button class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-500" title="下移">↓</button>
+                        <button class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-red-400" title="删除">×</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="process" class="max-w-7xl mx-auto px-6 py-32">
+        <p class="text-xs font-semibold text-brand-muted tracking-widest uppercase mb-4">Journey</p>
+        <h2 class="text-5xl font-serif font-bold mb-20">极简四步，生成专属链接</h2>
+
+        <div class="space-y-12">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center group">
+                <div class="md:col-span-1 text-5xl font-serif italic text-gray-200 group-hover:text-blue-500 transition-colors">01</div>
+                <div class="md:col-span-4 h-full pr-8">
+                    <h4 class="text-2xl font-bold mb-3">粘贴原始经历</h4>
+                    <p class="text-brand-muted text-sm leading-relaxed">不必纠结格式。将你已有的简历纯文本直接粘贴进来，系统会自动识别经历、技能、教育等核心区块。</p>
+                </div>
+                <div class="md:col-span-7 bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col gap-4">
+                    <div class="w-1/3 h-6 bg-blue-100 rounded animate-pulse"></div>
+                    <div class="w-full h-3 bg-gray-100 rounded"></div>
+                    <div class="w-4/5 h-3 bg-gray-100 rounded"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center group">
+                <div class="md:col-span-1 text-5xl font-serif italic text-gray-200 group-hover:text-purple-500 transition-colors">02</div>
+                <div class="md:col-span-4 pr-8">
+                    <h4 class="text-2xl font-bold mb-3">一键生成结构化网页</h4>
+                    <p class="text-brand-muted text-sm leading-relaxed">系统瞬间为你构建出一个具备顶级杂志排版美学、留白呼吸感的网页框架，告别密密麻麻的文本堆砌。</p>
+                </div>
+                <div class="md:col-span-7 bg-[#faf9f6] p-6 rounded-[2rem] border border-gray-100 shadow-inner relative overflow-hidden flex gap-4">
+                    <div class="w-1/4 bg-purple-100/50 rounded-xl h-24"></div>
+                    <div class="w-3/4 flex flex-col gap-3 justify-center">
+                        <div class="w-1/2 h-4 bg-purple-200 rounded"></div>
+                        <div class="w-full h-2 bg-gray-200 rounded"></div>
+                        <div class="w-5/6 h-2 bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center group">
+                <div class="md:col-span-1 text-5xl font-serif italic text-gray-200 group-hover:text-orange-500 transition-colors">03</div>
+                <div class="md:col-span-4 pr-8">
+                    <h4 class="text-2xl font-bold mb-3">自由编辑与配图</h4>
+                    <p class="text-brand-muted text-sm leading-relaxed">进入可视化编辑器。上传最能代表你的头像、项目实录图片；调整模块的先后顺序；随时修改文字描述。</p>
+                </div>
+                <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-4 bg-white border border-gray-100 rounded-[1.5rem] shadow-sm flex items-center justify-center gap-3">
+                        <span class="text-2xl">🖼️</span> <span class="text-sm font-bold text-gray-600">加入丰富视觉</span>
+                    </div>
+                    <div class="p-4 bg-white border border-gray-100 rounded-[1.5rem] shadow-sm flex items-center justify-center gap-3">
+                        <span class="text-2xl">🖱️</span> <span class="text-sm font-bold text-gray-600">点击拖拽排版</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center group">
+                <div class="md:col-span-1 text-5xl font-serif italic text-gray-200 group-hover:text-pink-500 transition-colors">04</div>
+                <div class="md:col-span-4 pr-8">
+                    <h4 class="text-2xl font-bold mb-3">获得专属分享链接</h4>
+                    <p class="text-brand-muted text-sm leading-relaxed">点击发布，获得你的永久网页链接。完美适配手机和电脑端，轻松发送给 HR 或直接挂在社交媒体主页。</p>
+                </div>
+                <div class="md:col-span-7 h-32 rounded-[2rem] flex items-center justify-center font-bold text-pink-600 bg-cover bg-center shadow-md relative overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=800&q=80');">
+                    <div class="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
+                    <div class="relative z-10 flex items-center gap-2 bg-white px-5 py-2.5 rounded-full shadow-lg border border-pink-100 hover:scale-105 transition cursor-pointer">
+                        <span class="text-gray-400">🔗</span> offerglow.com/in/yourname <span class="ml-2 text-xs bg-gray-100 px-2 py-1 rounded text-gray-500">复制</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 pb-8 hidden" id="generatedShell">
+        <div class="mb-5 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-brand-muted tracking-widest uppercase mb-2">Generated</p>
+                <h2 class="text-4xl font-serif font-bold">你的网页分身</h2>
+            </div>
+            <button id="backToTopBtn" class="border border-gray-200 bg-white px-5 py-3 rounded-full text-sm font-semibold hover:border-gray-400 transition">回到顶部</button>
+        </div>
+        <div class="rounded-[2rem] border border-gray-100 bg-white p-2 card-shadow overflow-hidden">
+            <div class="bg-[#fafafa] rounded-[1.5rem] border border-gray-100">
+                <nav class="w-full border-b border-gray-100">
+                    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                        <div class="font-serif text-xl font-semibold" id="siteNavName">你的名字</div>
+                        <div class="hidden md:flex space-x-8 text-sm text-gray-500">
+                            <a href="#generatedAbout" class="hover:text-black transition">关于</a>
+                            <a href="#generatedExperience" class="hover:text-black transition">经历</a>
+                            <a href="#generatedPortfolio" class="hover:text-black transition">作品</a>
+                            <a href="#generatedContact" class="hover:text-black transition">联系</a>
+                        </div>
+                        <div class="text-xs border border-gray-200 rounded-full px-3 py-1 flex gap-2">
+                            <span class="font-medium cursor-pointer">中</span> <span class="text-gray-300">|</span> <span class="text-gray-400 cursor-pointer">EN</span>
+                        </div>
+                    </div>
+                </nav>
+
+                <section class="max-w-7xl mx-auto px-6 pt-20 pb-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6">
+                            <span class="block text-xl font-sans font-normal text-gray-500 mb-2">你好，我是</span>
+                            <span contenteditable="true" id="heroName">你的名字。</span>
+                        </h1>
+                        <p class="text-xl font-medium mb-6" id="heroHeadline" contenteditable="true">
+                            一句更有气质的个人定位会显示在这里。
+                        </p>
+                        <p class="text-gray-500 mb-10 leading-relaxed max-w-md" id="heroSummary" contenteditable="true">
+                            这里会用简历里的前几段内容，自动生成一段更像个人网站开场白的介绍。
+                        </p>
+                        <div class="flex gap-4 flex-wrap">
+                            <button class="bg-black text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-gray-800 transition">下载简历</button>
+                            <button class="border border-gray-200 px-8 py-3 rounded-full text-sm font-medium hover:border-gray-400 transition">联系我 →</button>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="aspect-[4/5] bg-gray-200 rounded-[2rem] overflow-hidden shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" alt="Profile" class="w-full h-full object-cover object-center">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white py-24 border-t border-gray-100" id="generatedExperience">
+                    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-20">
+                        <div id="generatedAbout">
+                            <h2 class="text-5xl font-serif font-bold mb-8 leading-tight">清晰表达。<br>高级呈现。</h2>
+                            <p class="text-gray-600 mb-6 leading-relaxed" id="aboutParagraph1" contenteditable="true">
+                                这里会根据你的简历内容，自动生成一段更适合放在个人网站里的自我介绍。
+                            </p>
+                            <p class="text-gray-600 mb-6 leading-relaxed" id="aboutParagraph2" contenteditable="true">
+                                重点不是把简历原文生硬搬过来，而是让它更像一个真实的人在介绍自己。
+                            </p>
+                            <div class="flex flex-wrap gap-3 mt-10" id="skillChips"></div>
+                        </div>
+                        <div class="relative border-l border-gray-200 pl-8 space-y-12" id="timeline"></div>
+                    </div>
+                </section>
+
+                <section class="max-w-7xl mx-auto px-6 py-24" id="generatedPortfolio">
+                    <p class="text-xs text-gray-400 font-semibold tracking-widest mb-4 uppercase">精选内容</p>
+                    <h2 class="text-5xl font-serif font-bold mb-16">我做过的事。</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="portfolioGrid"></div>
+                </section>
+
+                <section class="max-w-7xl mx-auto px-6 py-24 border-t border-gray-100" id="generatedContact">
+                    <p class="text-xs text-gray-400 font-semibold tracking-widest mb-4 uppercase">联系</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+                        <div>
+                            <h2 class="text-5xl font-serif font-bold mb-6">继续聊聊。</h2>
+                            <p class="text-gray-500 leading-relaxed max-w-md" contenteditable="true">
+                                如果你对我的经历、项目或者合作机会感兴趣，欢迎继续联系。
+                            </p>
+                            <div class="mt-10 space-y-4 text-gray-600">
+                                <div id="contactEmail">邮箱：your@email.com</div>
+                                <div id="contactPhone">电话：+86 138 0000 0000</div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-[2rem] border border-gray-100 p-6 shadow-sm">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                                <input class="border border-gray-200 rounded-2xl px-4 py-4 focus:outline-none focus:border-gray-400" placeholder="你的名字">
+                                <input class="border border-gray-200 rounded-2xl px-4 py-4 focus:outline-none focus:border-gray-400" placeholder="你的邮箱">
+                            </div>
+                            <textarea class="w-full min-h-[140px] border border-gray-200 rounded-2xl px-4 py-4 resize-none focus:outline-none focus:border-gray-400" placeholder="想说点什么？"></textarea>
+                            <button class="mt-4 w-full bg-black text-white px-8 py-4 rounded-full text-sm font-medium hover:bg-gray-800 transition">发送消息</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 pb-32">
+        <div class="bg-[#111] text-white rounded-[3rem] p-20 text-center relative overflow-hidden shadow-2xl">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-gradient-to-b from-blue-600/30 via-orange-500/10 to-transparent opacity-50 blur-3xl pointer-events-none"></div>
+            <h2 class="text-5xl md:text-6xl font-serif font-bold mb-8 relative z-10">
+                用十分钟，<br><span class="italic text-gray-400">搭建让人过目不忘的分身。</span>
+            </h2>
+            <button id="ctaGenerateBtn" class="bg-white text-black px-12 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-xl relative z-10">
+                免费生成我的求职网页
+            </button>
+        </div>
+    </section>
+
+    <div id="loadingLayer" class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-white rounded-[2rem] p-8 shadow-2xl max-w-md mx-4">
+            <p class="text-xs font-semibold text-gray-400 tracking-[0.2em] uppercase mb-3">OfferGlow</p>
+            <h3 id="loadingTitle" class="text-2xl font-serif font-bold mb-3">正在生成网页分身…</h3>
+            <p id="loadingBody" class="text-gray-500 leading-relaxed">系统正在解析你的简历内容，并填充到个人网页模板里。</p>
+            <div class="w-full h-2 rounded-full bg-gray-100 overflow-hidden mt-5">
+                <div class="h-full w-1/2 bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse rounded-full"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed right-6 bottom-6 bg-white border border-gray-200 rounded-2xl shadow-2xl px-5 py-4 max-w-sm hidden z-50">
+        <div id="toastTitle" class="font-semibold text-gray-900">提示</div>
+        <div id="toastBody" class="text-sm text-gray-500 mt-1">内容</div>
+    </div>
+
+    <style>
+        @keyframes dash { to { stroke-dashoffset: -40; } }
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+    </style>
+
+    <script>
+        const sampleResume = `林一然
+AI Product Frontend Engineer
+reese@example.com · 138-0000-0000
+
+个人概览
+5年前端与增长产品经验，擅长把复杂B2B流程转化为清晰的用户路径。
+主导过简历解析、智能推荐、数据看板等AI工作流模块从0到1落地。
+
+工作经历
+OfferGlow Pro / 前端负责人 / 2024-2026
+- 重构简历生成链路，将用户从上传到首版预览的等待体验拆解为可感知步骤。
+- 设计母版与实例的松耦合更新策略，降低用户在多岗位投递时的维护成本。
+- 搭建行为追踪面板，帮助候选人识别HR对项目、技能与教育模块的关注度。
+
+项目经历
+AI Resume Parser
+- 定义解析JSON Schema，使前端编辑器能够稳定处理缺失字段。
+- 与算法同学协作完成结构化解析和网页预览流程。
+
+教育经历
+某大学 / 计算机相关专业 / 2018-2022
+
+技能
+Next.js, TypeScript, Tailwind CSS, AI Workflow, Growth Analytics`;
+
+        const state = {
+            profile: null
+        };
+
+        const resumeText = document.querySelector("#resumeText");
+        const generateBtn = document.querySelector("#generateBtn");
+        const ctaGenerateBtn = document.querySelector("#ctaGenerateBtn");
+        const loadingLayer = document.querySelector("#loadingLayer");
+        const loadingTitle = document.querySelector("#loadingTitle");
+        const loadingBody = document.querySelector("#loadingBody");
+        const generatedShell = document.querySelector("#generatedShell");
+        const toast = document.querySelector("#toast");
+        const toastTitle = document.querySelector("#toastTitle");
+        const toastBody = document.querySelector("#toastBody");
+        const inputMeta = document.querySelector("#inputMeta");
+        let toastTimer;
+
+        function showToast(title, body) {
+            toastTitle.textContent = title;
+            toastBody.textContent = body;
+            toast.classList.remove("hidden");
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.add("hidden"), 3200);
+        }
+
+        function setLoading(show, title = "正在生成网页分身…", body = "系统正在解析你的简历内容，并填充到个人网页模板里。") {
+            loadingTitle.textContent = title;
+            loadingBody.textContent = body;
+            loadingLayer.classList.toggle("hidden", !show);
+            loadingLayer.classList.toggle("flex", show);
+        }
+
+        async function fetchStructuredProfile(text) {
+            const response = await fetch("/api/parse-resume", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.profile) {
+                throw new Error(result.error || "解析失败");
+            }
+            return result;
+        }
+
+        function escapeHtml(text) {
+            return String(text || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        // Use this when embedding user text inside HTML attribute values in generated script strings
+        function escapeForAttr(text) {
+            return escapeHtml(text).replace(/`/g, "&#96;").replace(/\$/g, "&#36;");
+        }
+
+        function renderBullets(items, className = "") {
+            if (!items || !items.length) items = [""];
+            return `<ul class="${className} group/list">
+                ${items.map((item) => `<li contenteditable="true" style="outline:none" onblur="if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()">${escapeHtml(item)}</li>`).join("")}
+                <div class="opacity-0 group-hover/list:opacity-100 transition mt-2 cursor-pointer text-blue-500 text-xs font-medium inline-flex items-center gap-1 select-none" onclick="const li=document.createElement('li');li.contentEditable='true';li.style.outline='none';li.setAttribute('onblur','if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()');this.parentNode.insertBefore(li, this);li.focus();">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> 添加一行
+                </div>
+            </ul>`;
+        }
+
+        function buildGeneratedPageHtml(profile) {
+            const projectCards = (profile.projects || []).map((project, index) => `
+                <article class="rounded-[1.75rem] border border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between min-h-[320px] group/card relative">
+                    <button class="absolute -top-3 -right-3 w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition shadow-sm hover:bg-red-100 hover:text-red-600 z-10" onclick="this.closest('article').remove()" title="删除此卡片">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                    <div>
+                        <div class="aspect-[16/10] rounded-[1.25rem] overflow-hidden bg-gray-100 mb-5 image-upload-container">
+                            <img src="${[
+                                "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?auto=format&fit=crop&q=80&w=800",
+                                "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=80&w=800",
+                                "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&q=80&w=800",
+                                "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800"
+                            ][index % 4]}" class="w-full h-full object-cover" alt="项目配图">
+                        </div>
+                        <div class="text-xs text-blue-500 font-semibold tracking-[0.18em] uppercase mb-3" contenteditable="true" style="outline:none">${escapeHtml(project.date || "时间")}</div>
+                        <h3 class="text-2xl font-serif font-bold mb-4" contenteditable="true" style="outline:none">${escapeHtml(project.title || "项目名称")}</h3>
+                        ${project.metrics && project.metrics.length ? `
+                        <div class="flex gap-6 mb-5 border-b border-gray-50 pb-5">
+                            ${project.metrics.map(m => `
+                                <div>
+                                    <div class="text-2xl font-serif font-bold text-gray-900" contenteditable="true" style="outline:none">${escapeHtml(m.value)}</div>
+                                    <div class="text-[11px] text-gray-400 font-medium mt-1" contenteditable="true" style="outline:none">${escapeHtml(m.label)}</div>
+                                </div>
+                            `).join("")}
+                        </div>
+                        ` : ""}
+                        ${renderBullets(project.descriptions, "space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5")}
+                    </div>
+                </article>
+            `).join("") + 
+                '<article class="rounded-[1.75rem] border-2 border-dashed border-gray-200 bg-gray-50/50 hover:bg-gray-50 hover:border-blue-300 transition cursor-pointer p-6 flex flex-col justify-center items-center min-h-[320px]" onclick="addProjectCard(this)">' +
+                    '<div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-blue-500 mb-3"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg></div>' +
+                    '<span class="text-sm font-medium text-gray-500">添加新项目</span>' +
+                '</article>';
+
+            const experienceBlocks = (profile.experiences || []).map((entry, index) => `
+                <article class="relative rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-sm group/card">
+                    <button class="absolute -top-3 -right-3 w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition shadow-sm hover:bg-red-100 hover:text-red-600 z-10" onclick="this.closest('article').remove()" title="删除此经历">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                    <div class="text-xs ${index === 0 ? "text-blue-500" : "text-gray-400"} font-semibold tracking-[0.18em] uppercase mb-3" contenteditable="true" style="outline:none">${escapeHtml(entry.date || "时间")}</div>
+                    <h3 class="text-xl font-bold mb-4" contenteditable="true" style="outline:none">${escapeHtml(entry.title || "经历名称")}</h3>
+                    ${renderBullets(entry.descriptions, "space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5")}
+                </article>
+            `).join("") + 
+                '<article class="rounded-[1.5rem] border-2 border-dashed border-gray-200 bg-gray-50/50 hover:bg-gray-50 hover:border-blue-300 transition cursor-pointer p-6 flex items-center justify-center min-h-[160px]" onclick="addExperienceCard(this)">' +
+                    '<div class="flex items-center gap-2 text-sm font-medium text-gray-500">' +
+                        '<svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>' +
+                        '添加新经历' +
+                    '</div>' +
+                '</article>';
+
+            const educationSection = profile.educations && profile.educations.length ? `
+                <section id="education" class="max-w-6xl mx-auto px-6 py-12 border-t border-gray-100">
+                    <p class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-4">教育背景</p>
+                    <div class="grid gap-4">
+                        ${(profile.educations || []).map((entry) => `
+                            <article class="rounded-[1.5rem] border border-gray-100 bg-white px-5 py-5 shadow-sm">
+                                <div class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-2" contenteditable="true" style="outline:none">${escapeHtml(entry.date || "")}</div>
+                                <h3 class="font-semibold text-gray-900 mb-3" contenteditable="true" style="outline:none">${escapeHtml(entry.title)}</h3>
+                                ${renderBullets(entry.descriptions, "space-y-2 text-sm text-gray-600 leading-7 list-disc pl-5")}
+                            </article>
+                        `).join("")}
+                    </div>
+                </section>
+            ` : "";
+
+            const projectsSection = profile.projects && profile.projects.length ? `
+                <section class="max-w-6xl mx-auto px-6 py-16 border-t border-gray-100" id="generatedPortfolio">
+                    <p class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-4" contenteditable="true" style="outline:none">精选项目</p>
+                    <h2 class="text-4xl md:text-5xl font-serif font-bold mb-12" contenteditable="true" style="outline:none">高光项目。</h2>
+                    <div class="grid grid-cols-1 ${profile.projects.length === 1 ? "" : "md:grid-cols-2"} gap-8">
+                        ${projectCards}
+                    </div>
+                </section>
+            ` : "";
+
+            const renderTagHtml = (skill) => `<div class="skill-tag-item relative inline-flex group/tag"><span class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shadow-sm" contenteditable="true" style="outline:none;cursor:text">${escapeHtml(skill)}</span><button class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/tag:opacity-100 transition shadow text-[10px]" onclick="removeSkillTag(this)" title="删除标签">×</button></div>`;
+            const skillTags = (profile.tags || []).slice(0, 10).map(renderTagHtml).join("") + 
+                `<button class="add-tag-btn px-4 py-2 rounded-full border border-dashed border-blue-300 text-blue-500 text-xs font-medium hover:bg-blue-50 transition" onclick="addSkillTag(this)">+ 添加</button>`;
+            
+            const topMetricsHtml = profile.top_metrics && profile.top_metrics.length ? `
+                <div class="flex flex-wrap gap-4 mt-8">
+                    ${profile.top_metrics.map(m => `
+                        <div class="bg-[#faf7f2] border border-[#f0eadd] rounded-2xl px-6 py-4 min-w-[140px] relative group/metric">
+                            <button class="absolute -top-2 -right-2 w-6 h-6 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover/metric:opacity-100 transition shadow-sm hover:bg-red-100" onclick="this.parentNode.remove(); if(typeof saveState === 'function') saveState();" title="删除此数据">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                            <div class="text-3xl font-serif font-bold text-[#b48e58] mb-1" contenteditable="true" style="outline:none">${escapeHtml(m.value)}</div>
+                            <div class="text-[11px] text-[#8c7355] font-medium tracking-wide" contenteditable="true" style="outline:none">${escapeHtml(m.label)}</div>
+                        </div>
+                    `).join("")}
+                </div>
+            ` : "";
+
+            return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHtml(profile.name)} - OfferGlow 网页分身</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    <\/script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #fafafa; color: #111111; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        [contenteditable="true"] { outline: 2px solid transparent; outline-offset: 3px; transition: outline-color .16s ease, background-color .16s ease; }
+        [contenteditable="true"]:focus { outline-color: rgba(59,130,246,.24); background: rgba(59,130,246,.05); }
+        li::marker { color: #9ca3af; }
+        
+        .image-upload-container { cursor: pointer; position: relative; transition: opacity 0.2s; }
+        .image-upload-container:hover { opacity: 0.9; }
+        .image-upload-container::after { content: '📸 点击更换图片'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.6); color: white; padding: 10px 16px; border-radius: 20px; font-size: 13px; pointer-events: none; opacity: 0; transition: opacity 0.2s; white-space: nowrap; font-weight: 500; }
+        .image-upload-container:hover::after { opacity: 1; }
+        
+        .rich-toolbar { position: absolute; z-index: 100; background: #fff; border: 1px solid #e5e7eb; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 8px; padding: 4px; display: none; gap: 4px; align-items: center; }
+        .rich-toolbar button { background: none; border: none; cursor: pointer; padding: 6px; border-radius: 4px; color: #374151; font-weight: 600; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; font-family: serif; font-size: 16px; }
+        .rich-toolbar button:hover { background: #f3f4f6; }
+        .color-palette { display: flex; gap: 4px; border-left: 1px solid #e5e7eb; padding-left: 6px; margin-left: 2px; }
+        .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.1s; }
+        .color-dot:hover { transform: scale(1.15); }
+        #publish-btn { position: fixed; bottom: 24px; right: 24px; z-index: 50; background: #111; color: white; border: none; padding: 12px 24px; border-radius: 99px; font-size: 14px; font-weight: 500; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.2s, background 0.2s; display: flex; align-items: center; gap: 8px; }
+        #publish-btn:hover { transform: translateY(-2px); background: #000; }
+        #publish-btn:active { transform: translateY(0); }
+        #publish-btn.loading { opacity: 0.7; pointer-events: none; }
+    </style>
+</head>
+<body class="antialiased">
+    <nav class="w-full border-b border-gray-100 bg-white/90 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="font-serif text-xl font-semibold">${escapeHtml(profile.name || "你的名字")}</div>
+            <div class="hidden md:flex items-center gap-8 text-sm text-gray-500">
+                <a href="#hero">首页</a>
+                <a href="#education">教育</a>
+                <a href="#experience">经历</a>
+                ${profile.projects && profile.projects.length ? '<a href="#generatedPortfolio">项目</a>' : ''}
+                <a href="#contact">联系</a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="resume-content">
+        <section id="hero" class="max-w-6xl mx-auto px-6 pt-16 pb-20 grid grid-cols-1 md:grid-cols-[1.05fr_0.95fr] gap-12 items-center">
+            <div>
+                <div class="text-sm text-gray-400 tracking-[0.18em] uppercase mb-4">Personal Page</div>
+                <h1 class="text-5xl md:text-7xl font-serif font-bold leading-[1.02] mb-4">
+                    <span class="block text-xl font-sans font-normal text-gray-500 mb-2">你好，我是</span>
+                    <span contenteditable="true">${escapeHtml(profile.name || "你的名字")}。</span>
+                </h1>
+                ${profile.tagline ? `<p class="text-xl font-medium mb-3 text-gray-800 leading-snug" contenteditable="true">${escapeHtml(profile.tagline)}</p>` : ''}
+                <p class="text-sm text-gray-400 mb-6 tracking-wide" contenteditable="true">${escapeHtml(profile.headline || "")}</p>
+                <p class="text-gray-500 leading-8 max-w-xl" contenteditable="true">${escapeHtml((profile.summary || []).join(" "))}</p>
+                ${topMetricsHtml}
+            </div>
+            <div>
+                <div class="aspect-[4/5] rounded-[2rem] overflow-hidden bg-gray-100 shadow-2xl image-upload-container">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=1000" alt="Profile" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </section>
+
+        ${educationSection}
+
+        <section id="experience" class="border-t border-gray-100 bg-white py-16">
+            <div class="max-w-6xl mx-auto px-6 flex flex-col gap-10">
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-4" contenteditable="true" style="outline:none">核心信息</p>
+                        <h2 class="text-4xl md:text-5xl font-serif font-bold" contenteditable="true" style="outline:none">里程碑。</h2>
+                    </div>
+                    ${skillTags ? `<div class="flex flex-wrap gap-2 pt-4">${skillTags}</div>` : ""}
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    ${experienceBlocks}
+                </div>
+            </div>
+        </section>
+
+        ${projectsSection}
+
+        <div class="max-w-6xl mx-auto px-6 py-12 flex justify-center border-t border-dashed border-gray-200" id="add-section-container">
+            <button onclick="addNewSection(this)" class="px-6 py-3 rounded-full border border-blue-200 text-sm font-medium hover:bg-blue-50 transition text-blue-600 bg-white shadow-sm flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                添加自定义板块
+            </button>
+        </div>
+
+        <section id="contact" class="max-w-6xl mx-auto px-6 py-16 border-t border-gray-100">
+            <div class="grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
+                <div class="space-y-5">
+                    <p class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase">联系</p>
+                    <h2 class="text-4xl font-serif font-bold" contenteditable="true" style="outline:none">一起创造点什么。</h2>
+                    <p class="text-gray-500 leading-7 max-w-md" contenteditable="true">如果你对我的经历、项目或合作机会感兴趣，欢迎随时与我联系，探索更多可能。</p>
+                    <div class="space-y-2 text-sm text-gray-700">
+                        ${profile.email ? `<p class="flex items-center gap-3"><svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg><span>邮箱：${escapeHtml(profile.email)}</span></p>` : ""}
+                        ${profile.phone ? `<p class="flex items-center gap-3"><svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg><span>电话：${escapeHtml(profile.phone)}</span></p>` : ""}
+                    </div>
+                </div>
+                <div class="rounded-[1.75rem] border border-gray-100 bg-white p-6 shadow-sm">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <input class="border border-gray-200 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-gray-400" placeholder="你的名字">
+                        <input class="border border-gray-200 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-gray-400" placeholder="你的邮箱">
+                    </div>
+                    <textarea class="w-full min-h-[120px] border border-gray-200 rounded-2xl px-4 py-3.5 resize-none focus:outline-none focus:border-gray-400" placeholder="想说点什么？"></textarea>
+                    <button class="mt-4 w-full bg-black text-white px-8 py-3.5 rounded-full text-sm font-medium hover:bg-gray-800 transition">发送消息</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="rich-toolbar" class="rich-toolbar">
+        <button onmousedown="event.preventDefault();" onclick="document.execCommand('bold', false, null)" title="加粗"><b>B</b></button>
+        <button onmousedown="event.preventDefault();" onclick="document.execCommand('italic', false, null)" title="斜体"><i>I</i></button>
+        <button onmousedown="event.preventDefault();" onclick="document.execCommand('underline', false, null)" title="下划线"><u>U</u></button>
+        <div class="color-palette">
+            <div class="color-dot" style="background:#111111" onmousedown="event.preventDefault();" onclick="applyColor('#111111')" title="优雅黑"></div>
+            <div class="color-dot" style="background:#f97316" onmousedown="event.preventDefault();" onclick="applyColor('#f97316')" title="活力橙"></div>
+            <div class="color-dot" style="background:#2563eb" onmousedown="event.preventDefault();" onclick="applyColor('#2563eb')" title="克莱因蓝"></div>
+            <div class="color-dot" style="background:#8b5cf6" onmousedown="event.preventDefault();" onclick="applyColor('#8b5cf6')" title="灵动紫"></div>
+            <div class="color-dot" style="background:#10b981" onmousedown="event.preventDefault();" onclick="applyColor('#10b981')" title="薄荷绿"></div>
+            <div class="color-dot" style="background:#6b7280" onmousedown="event.preventDefault();" onclick="applyColor('#6b7280')" title="高级灰"></div>
+        </div>
+    </div>
+    
+    <button id="publish-btn" onclick="publishPage()">
+        <span>🚀</span> 发布专属链接
+    </button>
+    
+    <input type="file" id="imageUploadInput" accept="image/*" style="display:none">
+    
+    <script>
+        // Rich Text Toolbar
+        const toolbar = document.getElementById('rich-toolbar');
+        const colorPicker = document.getElementById('colorPicker');
+        
+        document.addEventListener('selectionchange', () => {
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                const range = selection.getRangeAt(0);
+                let container = range.commonAncestorContainer;
+                if (container.nodeType === 3) container = container.parentNode;
+                
+                if (container.closest('[contenteditable="true"]')) {
+                    const rect = range.getBoundingClientRect();
+                    toolbar.style.display = 'flex';
+                    toolbar.style.top = (window.scrollY + rect.top - 44) + 'px';
+                    toolbar.style.left = (window.scrollX + rect.left + rect.width / 2 - toolbar.offsetWidth / 2) + 'px';
+                    return;
+                }
+            }
+            toolbar.style.display = 'none';
+        });
+
+        function applyColor(hex) {
+            event.preventDefault();
+            document.execCommand('foreColor', false, hex);
+        }
+
+        // Publish Page
+        async function publishPage() {
+            const btn = document.getElementById('publish-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span>⏳</span> 正在生成...';
+            btn.classList.add('loading');
+            
+            // Clone document and clean up for publishing
+            const cloneNode = document.documentElement.cloneNode(true);
+            const scriptTags = cloneNode.querySelectorAll('script');
+            scriptTags.forEach(t => t.remove());
+            const toolbars = cloneNode.querySelectorAll('.rich-toolbar, #publish-btn, #imageUploadInput');
+            toolbars.forEach(t => t.remove());
+            const editables = cloneNode.querySelectorAll('[contenteditable="true"]');
+            editables.forEach(t => t.removeAttribute('contenteditable'));
+            
+            const htmlContent = "<!DOCTYPE html>\\n" + cloneNode.outerHTML;
+            
+            try {
+                const res = await fetch('/api/publish', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ html: htmlContent })
+                });
+                const data = await res.json();
+                if (data.url) {
+                    btn.innerHTML = '<span>✅</span> 发布成功！';
+                    setTimeout(() => {
+                        window.location.href = data.url;
+                    }, 1000);
+                } else {
+                    throw new Error(data.error || 'Failed to publish');
+                }
+            } catch (err) {
+                alert('发布失败: ' + err.message);
+                btn.innerHTML = originalText;
+                btn.classList.remove('loading');
+            }
+        }
+
+        // Image Upload
+        const fileInput = document.getElementById('imageUploadInput');
+        let currentImageTarget = null;
+        
+        document.addEventListener('click', (e) => {
+            const container = e.target.closest('.image-upload-container');
+            if (container) {
+                currentImageTarget = container.querySelector('img');
+                fileInput.click();
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && currentImageTarget) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    currentImageTarget.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+            fileInput.value = ''; // reset
+        });
+
+        // Custom Modules
+        function updateTagColors() {
+            const tags = document.querySelectorAll('.skill-tag-item > span');
+            const colors = ['bg-blue-600', 'bg-blue-500', 'bg-blue-400', 'bg-blue-300', 'bg-blue-200', 'bg-blue-100', 'bg-blue-50', 'bg-gray-100', 'bg-gray-100', 'bg-gray-100'];
+            const textColors = ['text-white', 'text-white', 'text-white', 'text-blue-900', 'text-blue-900', 'text-blue-900', 'text-blue-900', 'text-gray-700', 'text-gray-700', 'text-gray-700'];
+            
+            tags.forEach((tag, idx) => {
+                tag.className = tag.className.replace(/bg-[a-z]+-\\d+/g, '').replace(/text-[a-z]+-\\d+/g, '').replace(/text-white/g, '').trim();
+                const colorIdx = Math.min(idx, 9);
+                tag.className = colors[colorIdx] + ' ' + textColors[colorIdx] + ' px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shadow-sm ' + tag.className;
+            });
+
+            const addBtn = document.querySelector('.add-tag-btn');
+            if(addBtn) {
+                addBtn.style.display = tags.length >= 10 ? 'none' : 'inline-flex';
+            }
+        }
+
+        function removeSkillTag(btn) {
+            btn.parentNode.remove();
+            updateTagColors();
+            if(typeof saveState === 'function') saveState();
+        }
+
+        function addSkillTag(btn) {
+            const container = btn.parentNode;
+            const currentTags = container.querySelectorAll('.skill-tag-item');
+            if (currentTags.length >= 10) return;
+            
+            const div = document.createElement('div');
+            div.className = 'skill-tag-item relative inline-flex group/tag';
+            div.innerHTML = '<span class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shadow-sm" contenteditable="true" style="outline:none;cursor:text">新标签</span>' +
+                            '<button class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/tag:opacity-100 transition shadow text-[10px]" onclick="removeSkillTag(this)" title="删除标签">×</button>';
+            container.insertBefore(div, btn);
+            updateTagColors();
+            if(typeof saveState === 'function') saveState();
+        }
+
+        function addCustomProjectBlock(btn) {
+            const container = btn.parentNode.previousElementSibling;
+            const div = document.createElement('div');
+            div.innerHTML = '<article class="rounded-[1.75rem] border border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between min-h-[320px] group/card relative">' +
+                    '<button class="absolute -top-3 -right-3 w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition shadow-sm hover:bg-red-100 hover:text-red-600 z-10" onclick="this.closest(&quot;article&quot;).remove()" title="删除此卡片"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>' +
+                    '<div>' +
+                        '<div class="aspect-[16/10] rounded-[1.25rem] overflow-hidden bg-gray-100 mb-5 image-upload-container">' +
+                            '<img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover" alt="配图">' +
+                        '</div>' +
+                        '<div class="text-xs text-blue-500 font-semibold tracking-[0.18em] uppercase mb-3" contenteditable="true" style="outline:none">副标题或时间</div>' +
+                        '<h3 class="text-2xl font-serif font-bold mb-4" contenteditable="true" style="outline:none">新模块主标题</h3>' +
+                        '<ul class="space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5 group/list">' +
+                            '<li contenteditable="true" style="outline:none" onblur="if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()">点击此处修改描述内容。</li>' +
+                            '<li contenteditable="true" style="outline:none" onblur="if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()">可以自由加粗或改变字体颜色。</li>' +
+                            '<div class="opacity-0 group-hover/list:opacity-100 transition mt-2 cursor-pointer text-blue-500 text-xs font-medium inline-flex items-center gap-1 select-none" onclick="const li=document.createElement(&quot;li&quot;);li.contentEditable=&quot;true&quot;;li.style.outline=&quot;none&quot;;li.setAttribute(&quot;onblur&quot;,&quot;if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()&quot;);this.parentNode.insertBefore(li, this);li.focus();"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> 添加一行</div>' +
+                        '</ul>' +
+                    '</div>' +
+                '</article>';
+            container.appendChild(div.firstElementChild);
+            if(typeof saveState === 'function') saveState();
+        }
+
+        function addCustomImageBlock(btn) {
+            const container = btn.parentNode.previousElementSibling;
+            const div = document.createElement('div');
+            div.className = 'md:col-span-2 relative group/card';
+            div.innerHTML = '<button class="absolute -top-3 -right-3 w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition shadow-sm hover:bg-red-100 hover:text-red-600 z-10" onclick="this.closest(&quot;div.md\\\\:col-span-2&quot;).remove()" title="删除此大图"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>' +
+                '<article class="rounded-[1.75rem] border border-gray-100 bg-white p-2 shadow-sm">' +
+                    '<div class="rounded-[1.25rem] overflow-hidden bg-gray-100 image-upload-container relative">' +
+                        '<img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=1200" class="w-full h-auto object-contain max-h-[600px]">' +
+                    '</div>' +
+                '</article>';
+            container.appendChild(div);
+            if(typeof saveState === 'function') saveState();
+        }
+
+        function addExperienceCard(btn) {
+            const div = document.createElement('div');
+            div.innerHTML = '<article class="relative rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-sm group/card">' +
+                '<button class="absolute -top-3 -right-3 w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition shadow-sm hover:bg-red-100 hover:text-red-600 z-10" onclick="this.closest(&quot;article&quot;).remove()" title="删除此经历"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>' +
+                '<div class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-3" contenteditable="true" style="outline:none">时间</div>' +
+                '<h3 class="text-xl font-bold mb-4" contenteditable="true" style="outline:none">新经历名称</h3>' +
+                '<ul class="space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5 group/list">' +
+                    '<li contenteditable="true" style="outline:none" onblur="if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()">经历描述1</li>' +
+                    '<li contenteditable="true" style="outline:none" onblur="if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()">经历描述2</li>' +
+                    '<div class="opacity-0 group-hover/list:opacity-100 transition mt-2 cursor-pointer text-blue-500 text-xs font-medium inline-flex items-center gap-1 select-none" onclick="const li=document.createElement(&quot;li&quot;);li.contentEditable=&quot;true&quot;;li.style.outline=&quot;none&quot;;li.setAttribute(&quot;onblur&quot;,&quot;if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()&quot;);this.parentNode.insertBefore(li, this);li.focus();"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> 添加一行</div>' +
+                '</ul>' +
+            '</article>';
+            btn.parentNode.insertBefore(div.firstElementChild, btn);
+            if(typeof saveState === 'function') saveState();
+        }
+
+        function addProjectCard(btn) {
+            const div = document.createElement('div');
+            div.innerHTML = '<article class="rounded-[1.75rem] border border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between min-h-[320px] group/card relative">' +
+                '<button class="absolute -top-3 -right-3 w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition shadow-sm hover:bg-red-100 hover:text-red-600 z-10" onclick="this.closest(&quot;article&quot;).remove()" title="删除此卡片"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>' +
+                '<div>' +
+                    '<div class="aspect-[16/10] rounded-[1.25rem] overflow-hidden bg-gray-100 mb-5 image-upload-container">' +
+                        '<img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover" alt="配图">' +
+                    '</div>' +
+                    '<div class="text-xs text-blue-500 font-semibold tracking-[0.18em] uppercase mb-3" contenteditable="true" style="outline:none">时间</div>' +
+                    '<h3 class="text-2xl font-serif font-bold mb-4" contenteditable="true" style="outline:none">新项目名称</h3>' +
+                    '<ul class="space-y-3 text-sm text-gray-600 leading-7 list-disc pl-5 group/list">' +
+                        '<li contenteditable="true" style="outline:none" onblur="if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()">项目描述1</li>' +
+                        '<li contenteditable="true" style="outline:none" onblur="if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()">项目描述2</li>' +
+                        '<div class="opacity-0 group-hover/list:opacity-100 transition mt-2 cursor-pointer text-blue-500 text-xs font-medium inline-flex items-center gap-1 select-none" onclick="const li=document.createElement(&quot;li&quot;);li.contentEditable=&quot;true&quot;;li.style.outline=&quot;none&quot;;li.setAttribute(&quot;onblur&quot;,&quot;if(!this.textContent.trim() && this.parentNode.children.length > 2) this.remove()&quot;);this.parentNode.insertBefore(li, this);li.focus();"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> 添加一行</div>' +
+                    '</ul>' +
+                '</div>' +
+            '</article>';
+            btn.parentNode.insertBefore(div.firstElementChild, btn);
+            if(typeof saveState === 'function') saveState();
+        }
+
+        function addNewSection(btn) {
+            const section = document.createElement('section');
+            section.className = 'max-w-6xl mx-auto px-6 py-16 border-t border-gray-100 group/section relative';
+            section.innerHTML = '<button class="absolute top-12 right-6 w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover/section:opacity-100 transition shadow-sm hover:bg-red-100 hover:text-red-600 z-10" onclick="this.closest(&quot;section&quot;).remove()" title="删除该板块"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>' +
+                '<p class="text-xs text-gray-400 font-semibold tracking-[0.18em] uppercase mb-4" contenteditable="true" style="outline:none">自定义标签</p>' +
+                '<h2 class="text-4xl md:text-5xl font-serif font-bold mb-12" contenteditable="true" style="outline:none">自定义板块标题。</h2>' +
+                '<div class="custom-blocks-container grid grid-cols-1 md:grid-cols-2 gap-8 mb-8"></div>' +
+                '<div class="flex flex-wrap gap-4 opacity-50 hover:opacity-100 transition">' +
+                    '<button onclick="addCustomProjectBlock(this)" class="px-4 py-2 rounded-full border border-gray-200 text-xs font-medium hover:border-gray-400 transition text-gray-600 bg-white shadow-sm">+ 添加图文卡片</button>' +
+                    '<button onclick="addCustomImageBlock(this)" class="px-4 py-2 rounded-full border border-gray-200 text-xs font-medium hover:border-gray-400 transition text-gray-600 bg-white shadow-sm">+ 添加大图</button>' +
+                '</div>';
+            btn.parentNode.parentNode.insertBefore(section, btn.parentNode);
+            if(typeof saveState === 'function') saveState();
+        }
+
+        const _history = [];
+        let _historyIndex = -1;
+        let _saveTimeout = null;
+
+        function saveState() {
+            const content = document.getElementById('resume-content');
+            if (!content) return;
+            const html = content.innerHTML;
+            if (_historyIndex >= 0 && _history[_historyIndex] === html) return;
+            _history.length = _historyIndex + 1;
+            _history.push(html);
+            _historyIndex++;
+        }
+
+        function undoState() {
+            if (_historyIndex > 0) {
+                _historyIndex--;
+                const content = document.getElementById('resume-content');
+                if (content) content.innerHTML = _history[_historyIndex];
+            }
+        }
+
+        function redoState() {
+            if (_historyIndex < _history.length - 1) {
+                _historyIndex++;
+                const content = document.getElementById('resume-content');
+                if (content) content.innerHTML = _history[_historyIndex];
+            }
+        }
+
+        document.addEventListener('input', (e) => {
+            if (e.target.isContentEditable) {
+                clearTimeout(_saveTimeout);
+                _saveTimeout = setTimeout(saveState, 1000);
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateTagColors();
+            saveState();
+        });
+        // Fallback for immediate execution
+        setTimeout(() => {
+            updateTagColors();
+            saveState();
+        }, 100);
+    <\/script>
+    <div class="fixed bottom-24 right-6 flex flex-col gap-2 z-50">
+        <button onclick="undoState()" class="w-11 h-11 bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-center text-gray-600 hover:text-blue-500 hover:shadow-lg transition" title="撤回">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+        </button>
+        <button onclick="redoState()" class="w-11 h-11 bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-center text-gray-600 hover:text-blue-500 hover:shadow-lg transition" title="恢复">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"></path></svg>
+        </button>
+        <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="w-11 h-11 bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-center text-gray-600 hover:text-blue-500 hover:shadow-lg transition mt-2" title="回到顶部">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+        </button>
+    </div>
+</body>
+</html>`;
+        }
+
+        function openGeneratedPage(profile, previewWindow = null) {
+            previewWindow = previewWindow || window.open("", "_blank");
+            if (!previewWindow) {
+                showToast("浏览器拦截了新页面", "请允许打开新窗口后，再生成网页分身。");
+                return false;
+            }
+
+            previewWindow.document.open();
+            previewWindow.document.write(buildGeneratedPageHtml(profile));
+            previewWindow.document.close();
+            return true;
+        }
+
+        async function generatePage() {
+            const text = resumeText.value.trim();
+            if (!text) {
+                showToast("请先粘贴简历", "把完整简历文字粘贴进输入框后，再生成网页分身。");
+                return;
+            }
+
+            const previewWindow = window.open("", "_blank");
+            if (!previewWindow) {
+                showToast("浏览器拦截了新页面", "请允许打开新窗口后，再生成网页分身。");
+                return;
+            }
+
+            // 立即写入 loading 画面，避免空白页
+            previewWindow.document.write(`<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>正在生成网页分身…</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #fafafa; font-family: -apple-system, 'PingFang SC', sans-serif; }
+    .card { text-align: center; padding: 48px 40px; background: white; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); max-width: 380px; width: 90%; }
+    .logo { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: #111; margin-bottom: 32px; }
+    .dot { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #f97316); }
+    .spinner { width: 44px; height: 44px; border: 3px solid #e5e7eb; border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.75s linear infinite; margin: 0 auto 24px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h3 { font-size: 20px; font-weight: 600; color: #111; margin-bottom: 10px; }
+    p { font-size: 14px; color: #9ca3af; line-height: 1.6; }
+    .steps { margin-top: 28px; display: flex; flex-direction: column; gap: 8px; }
+    .step { font-size: 13px; color: #d1d5db; display: flex; align-items: center; gap: 8px; }
+    .step.done { color: #6b7280; }
+    .step-dot { width: 6px; height: 6px; border-radius: 50%; background: #e5e7eb; flex-shrink: 0; }
+    .step.done .step-dot { background: #22c55e; }
+    .step.active { color: #3b82f6; }
+    .step.active .step-dot { background: #3b82f6; animation: pulse 1s ease infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo"><div class="dot"></div> OfferGlow</div>
+    <div class="spinner"></div>
+    <h3>AI 正在解析你的简历</h3>
+    <p>正在生成你的专属网页分身，<br>请稍候片刻…</p>
+    <div class="steps">
+      <div class="step done"><div class="step-dot"></div>接收简历文本</div>
+      <div class="step active"><div class="step-dot"></div>AI 结构化解析中</div>
+      <div class="step"><div class="step-dot"></div>渲染网页分身</div>
+    </div>
+  </div>
+</body>
+</html>`);
+            previewWindow.document.close();
+
+            setLoading(true);
+            inputMeta.textContent = `已输入 ${text.length} 个字符，正在准备网页分身…`;
+
+            try {
+                const result = await fetchStructuredProfile(text);
+                const profile = result.profile;
+                state.profile = profile;
+                
+                if (result.debugError) {
+                    alert("⚠️ 发现 AI 调用异常，已降级为本地极速解析模式。\\n\\n后端错误详情：\\n" + result.debugError + "\\n\\n请检查环境变量配置或账号余额！");
+                }
+                
+                if (openGeneratedPage(profile, previewWindow)) {
+                    const modelUsed = result.source?.modelUsed || "unknown";
+                    showToast("网页分身已生成", `已为你打开新的网页分身页面。`);
+                }
+            } catch (error) {
+                previewWindow.close();
+                showToast("生成失败", "后端解析异常，请重试。");
+            } finally {
+                setLoading(false);
+            }
+
+        }
+
+        generateBtn.addEventListener("click", generatePage);
+        ctaGenerateBtn.addEventListener("click", () => {
+            document.querySelector("html, body");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            setTimeout(() => resumeText.focus(), 400);
+        });
+
+        document.querySelector("#backToTopBtn").addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        resumeText.addEventListener("input", () => {
+            const count = resumeText.value.trim().length;
+            inputMeta.textContent = count ? `已输入 ${count} 个字符` : "支持直接复制 PDF、Word 或招聘软件上的文字";
+        });
+
+    </script>
+</body>
+</html>
