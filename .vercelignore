@@ -4,5 +4,4 @@
 node_modules
 .next
 local_ai_server.py
-index.html
 PUT_DEEPSEEK_KEY_HERE.txt
