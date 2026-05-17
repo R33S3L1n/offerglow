@@ -27,9 +27,10 @@ src/
 │   ├── editor/page.tsx         # /editor — 编辑器（占位，待实现）
 │   ├── p/[id]/page.tsx         # /p/[id] — 公开页面（占位，需 Supabase）
 │   └── api/
-│       ├── parse-resume/route.ts   # POST — 简历解析（AI + 本地规则）
-│       ├── publish/route.ts        # POST — 发布（待接入 Supabase）
-│       └── rewrite-for-jd/route.ts # POST — JD 匹配（当前仅本地规则）
+│       ├── parse-resume/route.ts      # POST — 简历解析（AI + 本地规则）
+│       ├── generate-page/route.ts     # POST — 生成完整 HTML 页面
+│       ├── publish/route.ts           # POST — 发布（待接入 Supabase）
+│       └── rewrite-for-jd/route.ts    # POST — JD 匹配（当前仅本地规则）
 ├── components/
 │   ├── Navbar.tsx
 │   ├── HeroSection.tsx
@@ -43,7 +44,8 @@ src/
 └── lib/
     ├── types.ts                # MasterProfile, ParseResult 等类型
     ├── parser.ts               # 本地简历解析器（Python 迁移到 TS）
-    └── deepseek.ts             # DeepSeek 客户端 + localRewrite
+    ├── deepseek.ts             # DeepSeek 客户端 + localRewrite
+    └── renderer.ts             # 页面 HTML 生成器（服务端渲染）
 ```
 
 旧 Python 代码在 `archive/` 目录（仅作参考）。
@@ -54,7 +56,8 @@ src/
 - **双重解析策略**：DeepSeek AI 主解析，本地规则 `localParseResume()` 做降级兜底。AI 失败时自动回退。
 - **Schema 统一**：所有组件使用 `src/lib/types.ts` 中的 `MasterProfile` 类型。不再有老字段（`experience: string[]`）和新字段（`experiences: object[]`）的混乱。
 - **API Routes 替代 Python**：不再用 Flask/http.server。全部 API 走 Next.js Route Handlers。
-- **生成页面仍用 HTML 字符串**：`useResumeGenerator.ts` 中的 `buildGeneratedPageHtml()` 目前仍是字符串拼接，后续应改为 React 渲染（Next.js 的 `/editor` 路由完成后再做）。
+- **前后端已分离**：前端 `useResumeGenerator.ts` 只负责调 API 和展示。解析走 `POST /api/parse-resume`，页面 HTML 生成走 `POST /api/generate-page`，渲染逻辑集中在 `src/lib/renderer.ts`。
+- **页面渲染当前为服务端 HTML 字符串**：`renderer.ts` 生成完整 HTML 页面字符串返回给前端。编辑器上线后逐步改为 React 组件渲染。
 
 ## Current Status (2026-05-17)
 
@@ -63,6 +66,7 @@ src/
 - DeepSeek AI 解析 + 本地规则兜底
 - 首页组件化（8 个独立组件）
 - 代码结构从 Python 单体 + 80KB HTML 重构为 Next.js 项目
+- **前后端分离**：解析和页面生成均在后端 API 完成，前端只负责调接口和展示
 - .gitignore / 安全配置完成
 
 ### 待实现（按优先级）
