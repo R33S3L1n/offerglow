@@ -58,3 +58,4 @@ venv/
 
 # Misc
 *.tmp
+.env.local.save
