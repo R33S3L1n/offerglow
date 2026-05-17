@@ -1,92 +1,84 @@
 # OfferGlow Pro
 
-OfferGlow Pro turns a resume into a targeted application page with lightweight read signals.
+将简历文字一键转化为极具质感的求职网页。支持图文混排、模块化编辑、专属链接分享。
 
-## Current Status
+## 技术栈
 
-This repo now contains two layers:
+- **前端**: Next.js 14 (App Router) + React 18 + TypeScript + Tailwind CSS
+- **AI**: DeepSeek API（结构化简历解析 + JD 匹配重写）
+- **部署**: Vercel
+- **数据库**: Supabase（待接入）
 
-- `index.html`: standalone interactive prototype that can be served with `python3 -m http.server`.
-- `src/app`: Next.js App Router scaffold for the real product build.
+## 项目结构
 
-Implemented in the Next scaffold:
-
-- Bright minimal home page.
-- Resume upload / paste dual entry.
-- Text and `.txt` / `.md` resume parsing.
-- PDF parsing path through `pdf-parse`.
-- DOCX parsing path through `mammoth`.
-- Master profile JSON editor.
-- Template 01 adaptive rendering.
-- JD gap hints.
-- Targeted rewrite API scaffold.
-- Visit / duration / module-click simulation.
-- `POST /api/parse-resume` route for text, `.txt`, `.md`, `.pdf`, and `.docx`.
-- `POST /api/rewrite-for-jd` route returning rule-based gaps, anchor questions, and instance JSON.
-
-Not implemented yet:
-
-- Real AI structured extraction and STAR rewrite.
-- Supabase persistence.
-- Public `/u/[slug]` pages.
-- Real tracking events.
-- Payment / membership.
-
-## Local Preview
-
-Standalone prototype:
-
-```bash
-python3 -m http.server 4180 --bind 127.0.0.1
+```
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx              # 根布局
+│   │   ├── page.tsx                # 首页（不含编辑器）
+│   │   ├── globals.css             # 全局样式 + Tailwind
+│   │   ├── editor/
+│   │   │   └── page.tsx            # /editor 路由（待实现）
+│   │   ├── p/[id]/
+│   │   │   └── page.tsx            # /p/[id] 公开页面（待接入Supabase）
+│   │   └── api/
+│   │       ├── parse-resume/route.ts   # POST 简历解析
+│   │       ├── publish/route.ts        # POST 发布页面
+│   │       └── rewrite-for-jd/route.ts # POST JD匹配重写
+│   ├── components/                 # React 组件
+│   │   ├── Navbar.tsx
+│   │   ├── HeroSection.tsx
+│   │   ├── ResumeInput.tsx
+│   │   ├── useResumeGenerator.ts   # 简历生成 hook
+│   │   ├── WhySection.tsx
+│   │   ├── FeaturesSection.tsx
+│   │   ├── ProcessSection.tsx
+│   │   ├── CtaSection.tsx
+│   │   └── LoadingOverlay.tsx
+│   └── lib/
+│       ├── types.ts                # 共享类型定义
+│       ├── parser.ts               # 本地简历解析器（从Python迁移）
+│       └── deepseek.ts             # DeepSeek API 客户端
+├── archive/                        # 旧版代码（仅作参考）
+├── .gitignore
+├── .env.example
+├── package.json
+├── tsconfig.json
+├── next.config.js
+├── tailwind.config.ts
+├── postcss.config.mjs
+└── vercel.json
 ```
 
-Open:
+## 已实现
 
-```text
-http://127.0.0.1:4180/index.html
-```
+- 文本简历粘贴 → AI/本地结构化解析
+- 生成网页分身（新窗口预览）
+- DeepSeek AI 解析 + 本地规则兜底降级
+- 首页组件化（Navbar / Hero / Why / Features / Process / CTA）
 
-Next.js app:
+## 待实现
+
+- 用户注册/登录（Supabase Auth）
+- 付费系统（Stripe）
+- 公开发布 `/p/[id]` 页面（Supabase 持久化）
+- PDF/DOCX 文件上传解析
+- JD 匹配 AI 重写
+- 浏览追踪面板
+- 多模板切换
+
+## 本地开发
 
 ```bash
 npm install
 npm run dev
 ```
 
-This machine currently has Node but no package manager (`npm`, `pnpm`, `yarn`, and `corepack` are unavailable), so the Next app cannot be started here until one is installed.
+访问 http://localhost:3000
 
-## DeepSeek Setup
+## 环境变量
 
-Create `.env.local` in the project root:
-
-```bash
-DEEPSEEK_API_KEY=your_api_key_here
-DEEPSEEK_BASE_URL=https://api.deepseek.com
-DEEPSEEK_MODEL=deepseek-chat
-```
-
-Do not commit `.env.local`.
-
-When `DEEPSEEK_API_KEY` exists:
-
-- `POST /api/parse-resume` extracts raw text, then asks DeepSeek to return a structured `MasterProfile`.
-- `POST /api/rewrite-for-jd` asks DeepSeek to return advantages, gaps, anchor questions, rewritten instance JSON, and a QA notice.
-
-When `DEEPSEEK_API_KEY` is missing, both routes fall back to the local rule-based implementation.
-
-## Next Build Steps
-
-1. Add a package manager and install dependencies.
-2. Start the Next app and verify the migrated page.
-3. Verify `POST /api/parse-resume` with TXT, MD, PDF, and DOCX files.
-4. Verify DeepSeek extraction quality on real resumes.
-5. Add before/after diff highlighting for AI-written sections.
-6. Add Supabase tables for `master_profiles`, `targeted_instances`, and `tracking_events`.
-7. Add `/u/[slug]` public resume pages and dashboard tracking.
-
-## Vercel Deploy
-
-Use Vercel for a stable shareable URL. Required environment variables:
+创建 `.env.local`（不提交到 git）：
 
 ```bash
 DEEPSEEK_API_KEY=your_api_key_here
@@ -94,11 +86,6 @@ DEEPSEEK_BASE_URL=https://api.deepseek.com
 DEEPSEEK_MODEL=deepseek-chat
 ```
 
-Recommended settings:
+## Vercel 部署
 
-- Framework Preset: Next.js
-- Build Command: `next build`
-- Output Directory: leave empty
-- Install Command: `npm install`
-
-Do not upload `.env.local`; set the same values in Vercel Project Settings -> Environment Variables.
+在 Vercel 控制台设置对应环境变量，Framework 选择 Next.js，直接导入仓库即可。

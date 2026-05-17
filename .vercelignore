@@ -3,5 +3,5 @@
 .env.local
 node_modules
 .next
-local_ai_server.py
-PUT_DEEPSEEK_KEY_HERE.txt
+archive
+PUT_VERCEL_TOKEN_HERE.txt
