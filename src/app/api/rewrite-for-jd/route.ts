@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { localRewrite } from "@/lib/deepseek";
+import { aiRewriteForJd } from "@/lib/deepseek";
 import { normalizeProfile } from "@/lib/parser";
 import type { MasterProfile } from "@/lib/types";
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     const profile = normalizeProfile(masterProfile);
-    const result = localRewrite(profile, jd, (companyName || "").trim());
+    const result = await aiRewriteForJd(profile, jd, (companyName || "").trim());
 
     return NextResponse.json(result);
   } catch (err) {

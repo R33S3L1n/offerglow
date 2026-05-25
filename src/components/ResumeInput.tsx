@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useResumeGenerator } from "./useResumeGenerator";
+import LoadingOverlay from "./LoadingOverlay";
 
 export default function ResumeInput() {
   const [text, setText] = useState("");
@@ -68,6 +69,11 @@ export default function ResumeInput() {
           </button>
         </div>
       </div>
+      <LoadingOverlay
+        visible={loading}
+        title="AI 正在解析你的简历"
+        body="正在生成你的专属网页分身，请稍候片刻…"
+      />
     </div>
   );
 }

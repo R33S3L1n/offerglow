@@ -7,7 +7,92 @@
 @layer base {
   body {
     @apply font-sans text-brand-dark antialiased;
-    background-color: #f5f2eb;
+    background-color: var(--theme-bg-app);
+  }
+
+  /* 默认：暖沙金 */
+  :root, .theme-warm {
+    --theme-bg-app: #FAF7F2;
+    --theme-bg-sheet: #FCFAF7;
+    --theme-text-main: #2C251E;
+    --theme-text-sub: #5C534B;
+    --theme-border-divider: rgba(44, 37, 30, 0.08);
+    --theme-accent: #B48E58;
+    --theme-accent-hover: #9E7A45;
+    --theme-card-bg: #FCFAF7;
+    --theme-card-border: #EADBCC;
+    --theme-metric-bg: #FAF3E3;
+    --theme-metric-text: #8C7355;
+    --theme-tag-bg: #FAF3E3;
+    --theme-tag-text: #8C7355;
+  }
+
+  /* 极简白 */
+  .theme-minimal {
+    --theme-bg-app: #FAFAFA;
+    --theme-bg-sheet: #FFFFFF;
+    --theme-text-main: #111827;
+    --theme-text-sub: #4B5563;
+    --theme-border-divider: rgba(17, 24, 39, 0.08);
+    --theme-accent: #2563EB;
+    --theme-accent-hover: #1D4ED8;
+    --theme-card-bg: #F9FAFB;
+    --theme-card-border: #F3F4F6;
+    --theme-metric-bg: #EFF6FF;
+    --theme-metric-text: #1E40AF;
+    --theme-tag-bg: #F3F4F6;
+    --theme-tag-text: #374151;
+  }
+
+  /* 极客黑 */
+  .theme-dark {
+    --theme-bg-app: #07090E;
+    --theme-bg-sheet: #0B0F19;
+    --theme-text-main: #F3F4F6;
+    --theme-text-sub: #9CA3AF;
+    --theme-border-divider: rgba(243, 244, 246, 0.08);
+    --theme-accent: #A78BFA;
+    --theme-accent-hover: #8B5CF6;
+    --theme-card-bg: #161B22;
+    --theme-card-border: #21262D;
+    --theme-metric-bg: #2C1A4D;
+    --theme-metric-text: #D8B4FE;
+    --theme-tag-bg: #21262D;
+    --theme-tag-text: #C9D1D9;
+  }
+
+  /* 丁香紫 */
+  .theme-lilac {
+    --theme-bg-app: #F5F3FF;
+    --theme-bg-sheet: #FFFFFF;
+    --theme-text-main: #1E1B4B;
+    --theme-text-sub: #4F46E5;
+    --theme-border-divider: rgba(30, 27, 75, 0.08);
+    --theme-accent: #8B5CF6;
+    --theme-accent-hover: #7C3AED;
+    --theme-card-bg: #FAF9FF;
+    --theme-card-border: #EEF2F6;
+    --theme-metric-bg: #F3E8FF;
+    --theme-metric-text: #6B21A8;
+    --theme-tag-bg: #EDE9FE;
+    --theme-tag-text: #5B21B6;
+  }
+
+  /* 静谧蓝 */
+  .theme-ocean {
+    --theme-bg-app: #F0F4F8;
+    --theme-bg-sheet: #FFFFFF;
+    --theme-text-main: #0F172A;
+    --theme-text-sub: #334155;
+    --theme-border-divider: rgba(15, 23, 42, 0.08);
+    --theme-accent: #1E3A8A;
+    --theme-accent-hover: #172554;
+    --theme-card-bg: #F8FAFC;
+    --theme-card-border: #E2E8F0;
+    --theme-metric-bg: #E0F2FE;
+    --theme-metric-text: #0369A1;
+    --theme-tag-bg: #E2E8F0;
+    --theme-tag-text: #334155;
   }
 
   ::selection {
@@ -16,6 +101,44 @@
 }
 
 @layer components {
+  /* Theme mapping utilities */
+  .bg-theme-sheet { background-color: var(--theme-bg-sheet); }
+  .text-theme-main { color: var(--theme-text-main); }
+  .text-theme-sub { color: var(--theme-text-sub); }
+  .border-theme-divider { border-color: var(--theme-border-divider); }
+  .bg-theme-accent { background-color: var(--theme-accent); }
+  .hover-bg-theme-accent:hover { background-color: var(--theme-accent-hover); }
+  .text-theme-accent { color: var(--theme-accent); }
+  .border-theme-accent { border-color: var(--theme-accent); }
+  
+  .bg-theme-card {
+    background-color: var(--theme-card-bg);
+    border-color: var(--theme-card-border);
+  }
+  .bg-theme-metric {
+    background-color: var(--theme-metric-bg);
+    color: var(--theme-metric-text);
+  }
+  .bg-theme-tag {
+    background-color: var(--theme-tag-bg);
+    color: var(--theme-tag-text);
+  }
+  .bg-theme-accent-light {
+    background-color: color-mix(in srgb, var(--theme-accent) 5%, transparent);
+  }
+  .hover-bg-theme-accent-light:hover {
+    background-color: color-mix(in srgb, var(--theme-accent) 5%, transparent);
+  }
+  .bg-theme-accent-10 {
+    background-color: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  }
+  .hover-bg-theme-accent-10:hover {
+    background-color: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  }
+  .focus-theme-accent-bg:focus {
+    background-color: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+  }
+
   .glass-nav {
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(12px);
@@ -45,5 +168,12 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

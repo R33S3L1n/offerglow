@@ -40,6 +40,8 @@ const DEFAULT_PROFILE: MasterProfile = {
   name: "你的名字",
   headline: "",
   tagline: "",
+  aboutTitle: "全球视野。\nAI最前线。",
+  contactTitle: "一起创造点什么。",
   email: "",
   phone: "",
   summary: [],
@@ -48,6 +50,7 @@ const DEFAULT_PROFILE: MasterProfile = {
   experiences: [],
   projects: [],
   educations: [],
+  customSections: [],
 };
 
 // ---- Text utilities ----
@@ -428,15 +431,23 @@ export function localParseResume(rawText: string): MasterProfile {
 
   const tagline = generateTagline(experiences, summaryParsed, headline);
 
-  // Extract top metrics
+  // Extract top metrics (only matches actual percentage, growth, scale, or ranking metrics)
   const topMetrics: Metric[] = [];
-  const allText = rawText.replace(/\n/g, " ");
-  const metricMatches = allText.matchAll(
-    /(\d+%|\d+\+?|[\d.]+[MkK万])\s*([^\s,，。]{2,6})/g
+  // Filter out contact lines first to prevent matching numbers inside email/phone/address lines
+  const cleanMetricText = lines
+    .filter((l) => !isContactLine(l) && !/\b(?:岁|年龄|出生|出生日期|性别|邮编|电话|QQ)\b/.test(l))
+    .join(" ");
+
+  const metricMatches = cleanMetricText.matchAll(
+    /(\d+(?:\.\d+)?%|\d+\+(?!\d)|[\d.]+(?:[万亿倍KkMm])|前\s*\d+(?:%|名)?)\s*([^\s,，。]{2,8})/g
   );
   for (const m of metricMatches) {
-    if (m[2].length <= 6 && topMetrics.length < 4) {
-      topMetrics.push({ value: m[1], label: m[2] });
+    const value = m[1].trim();
+    const label = m[2].trim();
+    // Exclude potential year numbers like 2023, 2024, 2025, 2026, 1999 etc.
+    const isYear = /^(?:19|20)\d{2}\+?$/.test(value);
+    if (label.length >= 2 && label.length <= 8 && topMetrics.length < 4 && !isYear) {
+      topMetrics.push({ value, label });
     }
   }
 
@@ -448,6 +459,7 @@ export function localParseResume(rawText: string): MasterProfile {
     name,
     headline,
     tagline,
+    aboutTitle: "全球视野。\nAI最前线。",
     email,
     phone,
     summary: summaryParsed,
@@ -469,11 +481,11 @@ export function normalizeProfile(
   const result = { ...fb };
 
   if (profile && typeof profile === "object") {
-    for (const key of ["name", "headline", "tagline", "email", "phone"] as const) {
+    for (const key of ["name", "headline", "tagline", "aboutTitle", "contactTitle", "email", "phone"] as const) {
       if (profile[key]) result[key] = String(profile[key]).trim();
     }
     for (const key of [
-      "summary", "tags", "experiences", "projects", "educations", "top_metrics",
+      "summary", "tags", "experiences", "projects", "educations", "top_metrics", "customSections",
     ] as const) {
       if (profile[key] && Array.isArray(profile[key]) && profile[key].length > 0) {
         (result as Record<string, unknown>)[key] = profile[key];
@@ -487,5 +499,6 @@ export function normalizeProfile(
   for (const k of ["summary", "tags"] as const) {
     result[k] = (result[k] || []).map((i) => String(i).trim()).filter(Boolean);
   }
+  result.customSections = result.customSections || [];
   return result;
 }

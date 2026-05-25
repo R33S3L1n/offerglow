@@ -2,6 +2,13 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  safelist: [
+    "theme-warm",
+    "theme-minimal",
+    "theme-dark",
+    "theme-lilac",
+    "theme-ocean",
+  ],
   theme: {
     extend: {
       fontFamily: {
