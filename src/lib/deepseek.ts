@@ -8,7 +8,7 @@ interface DeepSeekMessage {
 
 export function getDeepSeekConfig() {
   return {
-    apiKey: process.env.DEEPSEEK_API_KEY || "",
+    apiKey: process.env.DEEPSEEK_API_KEY || process.env.deepseek || "",
     baseUrl: (process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com").replace(/\/$/, ""),
     model: process.env.DEEPSEEK_MODEL || "deepseek-chat",
   };
